@@ -6,22 +6,23 @@ const resend = new Resend(RESEND_API_KEY);
 
 console.log("API_KEY:", resend);
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
   const query = req.query;
-  const name = query.name;
-  const message = query.message;
-  const subject = query.subject;
-  console.log(name);
-  console.log(message);
+  const user = query.name || "add new name to url";
+  const message = query.message || "add new message to url";
+  const subject = query.subject || "whatever";
+console.log(user);
+ console.log(message);
 
   const email = {
+
     from: 'Acme <onboarding@resend.dev>',
     to: ['chrisdafur@gmail.com'],
     subject: subject,
     html: `<strong>${message}</strong>`,
-
   }
-resend.emails.send(email);
+  const { data, error } = await resend.emails.send(email);
+  console.log(data, error);
 
-  res.status(200).json({ name: name, subject: subject, message: message });
+  res.status(200).json({ name: user, subject: subject, message: message });
 }
